@@ -12,10 +12,19 @@ pico_sdk_init()
 # rest of your project
 add_executable(rp2040_test
     src/main.cpp
+    src/gpio.cpp
+    src/i2c.cpp
+    src/vt100.cpp
 )
 
 # Add pico_stdlib library which aggregates commonly used features
-target_link_libraries(rp2040_test pico_stdlib)
+target_include_directories(rp2040_test PRIVATE src/inc/)
+
+target_link_libraries(rp2040_test pico_stdlib hardware_i2c)
+
+# enable usb disable uart
+pico_enable_stdio_usb(rp2040_test 1)
+pico_enable_stdio_uart(rp2040_test 0)
 
 # create map/bin/hex/uf2 file in addition to ELF.
 pico_add_extra_outputs(rp2040_test)
