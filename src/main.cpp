@@ -12,6 +12,7 @@
 #include "gpio.h"
 #include "i2c.h"
 #include "vt100.h"
+#include "vl6108.h"
 
 #define BOOT_DELAY 1500
 
@@ -41,14 +42,16 @@ int main()
 {
     uint counter = 0;
     stdio_init_all(); // initialise uart
-    cl_i2c i2c(i2c_default, PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN, 25000);
+    tc_i2c i2c(i2c_default, PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN, 25000);
     tc_vt100 terminal;
+    tc_vl6108 vl6108;
 
     gpio[0].init();
     gpio[1].init();
     gpio[2].init();
 
     i2c.init();
+    vl6108.set_i2c(&i2c);
 
     while(!gpio[2].read())
     {
@@ -60,9 +63,22 @@ int main()
     terminal.clear_screen();
     terminal.clear_terminal();
 
-    printf(rasbpi_logo);
+    for (uint i = 0; i < 5; i++)
+    {
+        terminal.print(rasbpi_logo);
+        sleep_ms(5000);
+        terminal.set_cursor(0,0);
+        terminal.clear_screen();
+    }
+
+
 
     i2c.scan(true);
+
+    printf("vl6108 model id : %i\n", vl6108.get_model_id());
+    printf("vl6108 model id : %i\n", vl6108.get_model_rev());
+    printf("vl6108 model id : %i\n", vl6108.get_module_rev());
+
 
     printf("Hello World!\n");
 

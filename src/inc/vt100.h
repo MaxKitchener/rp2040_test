@@ -11,7 +11,7 @@
 #ifndef _VT100_H
 #define _VT100_H
 
-#include "pico/stdlib.h"
+#include "global.h"
 
 // SGR(Select Graphic Rendition)
 #define ANSI_SGR_RESET 0x00;
@@ -71,7 +71,7 @@ class tc_vt100
     public:
 
         tc_vt100();
-        void print(char* string, ...);
+        void print(const char* string, ...);
         void set_colour(te_ansi_colour colour);
         //void set_colour_extended(uint r, uint g, uint b);
         //void set_bold(uint enable);

@@ -14,13 +14,13 @@
 #include "i2c.h"
 
 
-uint cl_i2c::check_address_reserved(uint address)
+uint tc_i2c::check_address_reserved(uint address)
 {
     return (address & 0x78) == 0 || (address & 0x78) == 0x78;
 }
 
 
-cl_i2c::cl_i2c(i2c_inst_t* _i2c, uint _sda_pin, uint _scl_pin, uint _speed)
+tc_i2c::tc_i2c(i2c_inst_t* _i2c, uint _sda_pin, uint _scl_pin, uint _speed)
 {
     i2c = _i2c;
     sda_pin = _sda_pin;
@@ -28,7 +28,7 @@ cl_i2c::cl_i2c(i2c_inst_t* _i2c, uint _sda_pin, uint _scl_pin, uint _speed)
     speed = _speed;
 }
 
-void cl_i2c::init()
+void tc_i2c::init()
 {
     i2c_init(i2c1, speed);
 
@@ -40,7 +40,7 @@ void cl_i2c::init()
     //bi_decl(bi_2pins_with_func(sda_pin, scl_pin, GPIO_FUNC_I2C));
 }
 
-void cl_i2c::scan(uint print)
+void tc_i2c::scan(uint print)
 {
     if(print)
     {
@@ -71,4 +71,12 @@ void cl_i2c::scan(uint print)
             printf(addr % 16 == 15 ? "\n" : "  ");
         }
     }
+}
+
+
+void tc_i2c::read(uint address, uint8_t* buffer, uint length)
+{
+    uint ret = 0;
+
+    ret = i2c_read_blocking(i2c, address, buffer, length, false);
 }

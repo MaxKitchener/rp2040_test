@@ -15,6 +15,7 @@ add_executable(rp2040_test
     src/gpio.cpp
     src/i2c.cpp
     src/vt100.cpp
+    src/vl6108.cpp
 )
 
 # Add pico_stdlib library which aggregates commonly used features

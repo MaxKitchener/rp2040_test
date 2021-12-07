@@ -10,11 +10,11 @@
 #ifndef _GPIO_H
 #define _GPIO_H
 
-#include "pico/stdlib.h"
+#include "global.h"
 
 #define NUM_GPIO 2
 
-class cl_pin
+class tc_pin
 {
     private:
         uint pin_no;
@@ -22,7 +22,7 @@ class cl_pin
         uint pullup;
 
     public:
-        cl_pin(uint _pin_no, uint _direction, uint _pullup);
+        tc_pin(uint _pin_no, uint _direction, uint _pullup);
         void init();
         uint read();
         void write(uint value);
@@ -31,6 +31,6 @@ class cl_pin
 };
 
 
-extern cl_pin gpio[];
+extern tc_pin gpio[];
 
 #endif

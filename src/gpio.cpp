@@ -1,7 +1,16 @@
-#include "pico/stdlib.h"
+/*
+ * ****************************************************************************
+ * File           :       gpio.cpp
+ * Project        :       <<project>>
+ *
+ * Description    :
+ * ****************************************************************************
+ */
+
+
 #include "gpio.h"
 
-cl_pin gpio[] =
+tc_pin gpio[] =
 {
     { PICO_DEFAULT_LED_PIN,    GPIO_OUT,    0},
     { 15,                      GPIO_OUT,    0},
@@ -9,14 +18,14 @@ cl_pin gpio[] =
 };
 
 
-cl_pin::cl_pin(uint _pin_no, uint _direction, uint _pullup)
+tc_pin::tc_pin(uint _pin_no, uint _direction, uint _pullup)
 {
     pin_no = _pin_no;
     direction = _direction;
     pullup = _pullup;
 }
 
-void cl_pin::init()
+void tc_pin::init()
 {
     gpio_init(pin_no);
     gpio_set_dir(pin_no, direction);
@@ -25,12 +34,12 @@ void cl_pin::init()
     else if(pullup == 2) gpio_pull_down(pin_no);
 }
 
-uint cl_pin::read()
+uint tc_pin::read()
 {
     return(gpio_get(pin_no));
 }
 
-void cl_pin::write(uint value)
+void tc_pin::write(uint value)
 {
     gpio_put(pin_no, value);
 }

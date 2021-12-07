@@ -17,7 +17,7 @@ tc_vt100::tc_vt100()
     cursor_collumn = 0;
 }
 
-void tc_vt100::print(char* string, ...)
+void tc_vt100::print(const char* string, ...)
 {
     va_list valist;
 
