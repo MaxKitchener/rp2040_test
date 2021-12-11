@@ -74,9 +74,15 @@ void tc_i2c::scan(uint print)
 }
 
 
-void tc_i2c::read(uint address, uint8_t* buffer, uint length)
+void tc_i2c::read(uint8_t address, uint8_t reg, uint8_t* buffer, uint length)
 {
-    uint ret = 0;
+    // Set memory pointer in I2C device to desired register
+    write(address, &reg, 1);
+    // Read back 'length' bytes
+    i2c_read_blocking(i2c, address, buffer, length, false);
+}
 
-    ret = i2c_read_blocking(i2c, address, buffer, length, false);
+void tc_i2c::write(uint8_t address, uint8_t* buffer, uint length)
+{
+    i2c_write_blocking(i2c, address, buffer, length, false);
 }

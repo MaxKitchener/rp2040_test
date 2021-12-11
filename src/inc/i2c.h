@@ -27,8 +27,8 @@ class tc_i2c
         tc_i2c(i2c_inst_t* _i2c, uint _sda_pin, uint _scl_pin, uint _speed);
         void init();
         void scan(uint print);
-        void read(uint address, uint8_t* buf, uint len);
-        void write(uint address, uint8_t* buf, uint len);
+        void read(uint8_t address, uint8_t reg, uint8_t* buf, uint len);
+        void write(uint8_t address, uint8_t* buf, uint len);
 };
 
 #endif

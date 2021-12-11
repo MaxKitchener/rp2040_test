@@ -30,12 +30,14 @@ class tc_vl6108
             /*0x002*/uint8_t  id_model_rev_min;
             /*0x003*/uint8_t  id_module_rev_maj;
             /*0x004*/uint8_t  id_module_rev_min;
+            /*0x005*/uint8_t  pad_0x005;
             /*0x006*/uint8_t  id_date_hi;
             /*0x007*/uint8_t  id_date_lo;
             /*0x008*/uint16_t id_time;
             /*0x010*/uint8_t  sys_mode_gpio0;
             /*0x011*/uint8_t  sys_mode_gpio1;
             /*0x012*/uint8_t  sys_history_ctrl;
+            /*0x013*/uint8_t  pad_0x013;
             /*0x014*/uint8_t  sys_interrupt_config_gpio0;
             /*0x015*/uint8_t  sys_interrupt_clear;
             /*0x016*/uint8_t  sys_fresh_out_of_reset;
@@ -45,22 +47,29 @@ class tc_vl6108
             /*0x01A*/uint8_t  sysrange_thresh_low;
             /*0x01B*/uint8_t  sysrange_intermeasurement_period;
             /*0x01C*/uint8_t  sysrange_max_convergance_time;
-            /*0x01E*/uint8_t  sysrange_crosstalk_compensation_rate;
+            /*0x01D*/uint8_t  pad_0x01D;
+            /*0x01E*/uint16_t sysrange_crosstalk_compensation_rate;
             /*0x021*/uint8_t  sysrange_crosstalk_valid_height;
             /*0x022*/uint16_t sysrange_early_convergance_estimate;
             /*0x024*/uint8_t  sysrange_part_to_part_range_offset;
             /*0x025*/uint8_t  sysrange_range_ignore_valid_height;
             /*0x026*/uint16_t sysrange_range_ignore_thresh;
+            /*0x028*/uint32_t pad_0x028;
             /*0x02C*/uint8_t  sysrange_max_ambient_level_mult;
             /*0x02D*/uint8_t  sysrange_range_check_enables;
             /*0x02E*/uint8_t  sysrange_vhv_recalibrate;
+            /*0x02F*/uint16_t pad_0x02F;
             /*0x031*/uint8_t  sysrange_vhv_repeat_rate;
+            /*0x032*/uint32_t pad_0x032;
+            /*0x036*/uint16_t pad_0x036;
             /*0x038*/uint8_t  sysals_start;
+            /*0x039*/uint8_t  pad_0x039;
             /*0x03A*/uint16_t sysals_thresh_high;
             /*0x03C*/uint16_t sysals_thresh_low;
             /*0x03E*/uint8_t  sysals_intermeasurement_period;
             /*0x03F*/uint8_t  sysals_analogue_gain;
-            /*0x040*/uint8_t  sysals_integration_period;
+            /*0x040*/uint16_t sysals_integration_period;
+
             /*0x04D*/uint8_t  result_range_status;
             /*0x04E*/uint8_t  result_als_status;
             /*0x04F*/uint8_t  result_interrupt_status_gpio;
@@ -90,9 +99,10 @@ class tc_vl6108
         tc_vl6108();
         void set_address(uint _address);
         void set_i2c(tc_i2c* _i2c);
-        uint get_model_id();
-        uint get_model_rev();
-        uint get_module_rev();
+
+        void get_id_info();
+        void get_sys_info();
+        void get_sysrange_info();
 
 };
 

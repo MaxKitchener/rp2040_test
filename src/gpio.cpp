@@ -14,7 +14,7 @@ tc_pin gpio[] =
 {
     { PICO_DEFAULT_LED_PIN,    GPIO_OUT,    0},
     { 15,                      GPIO_OUT,    0},
-    { 14,                      GPIO_IN,     1}
+    { 14,                      GPIO_IN,     2}
 };
 
 

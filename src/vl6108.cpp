@@ -30,20 +30,18 @@ void tc_vl6108::set_i2c(tc_i2c* _i2c)
 
 }
 
-uint tc_vl6108::get_model_id()
+
+void tc_vl6108::get_id_info()
 {
-    i2c->read(address, &reg.id_model_id, 1);
-    return(reg.id_model_id);
+    i2c->read(address, 0x00, &reg.id_model_id, 9);
 }
 
-uint tc_vl6108::get_model_rev()
+void tc_vl6108::get_sys_info()
 {
-    i2c->read(address, &reg.id_model_rev_maj, 2);
-    return((reg.id_model_rev_maj << 8) + reg.id_model_rev_min);
+    i2c->read(address, 0x10, &reg.sys_mode_gpio0, 7);
 }
 
-uint tc_vl6108::get_module_rev()
+void tc_vl6108::get_sysrange_info()
 {
-    i2c->read(address, &reg.id_module_rev_maj, 2);
-    return((reg.id_module_rev_maj << 8) + reg.id_module_rev_min);
+    i2c->read(address, 0x18, &reg.sysrange_start, 14);
 }

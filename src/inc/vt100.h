@@ -67,6 +67,10 @@ class tc_vt100
     private:
         uint cursor_row;
         uint cursor_collumn;
+        uint window_width;
+        uint window_height;
+
+        uint boundary_check(uint value, uint lower, uint upper);
 
     public:
 
@@ -82,6 +86,9 @@ class tc_vt100
         //uint get_cursor_collumn();
         void clear_screen();
         void clear_terminal();
+
+        void set_window_size(uint width, uint height);
+        void print_window_border();
 
 };
 
