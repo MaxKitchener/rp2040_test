@@ -73,20 +73,37 @@ void tc_vt100::set_window_size(uint width, uint height)
     window_height = height;
 }
 
-void tc_vt100::print_window_border()
+void tc_vt100::create_window_at_pos(uint width, uint height, const char* title, uint x, uint y)
 {
-    set_cursor(1,1);
-    for (uint i = 0; i < window_width; i++)
+    set_cursor(x,y++);
+    printf("┌");
+    for (uint i = 2; i < width; i++)
     {
-        printf("-");
+        printf("─");
     }
-    set_cursor(1,2);
-    for (uint row = 0; row < window_height-2; row++)
+    printf("┐");
+    set_cursor(x,y++);
+    printf("│ %-*s │\n", width-4, title);
+
+    set_cursor(x, y++);
+    printf("├");
+    for (uint i = 2; i < width; i++)
     {
-        printf("|%*s|\n", window_width-2, "");
+        printf("─");
     }
-    for (uint i = 0; i < window_width; i++)
+    printf("┤");
+
+    for (uint row = 0; row < height-2; row++)
     {
-        printf("-");
+        set_cursor(x,y++);
+        printf("│%*s│", width-2, "");
     }
+
+    set_cursor(x, y++);
+    printf("└");
+    for (uint i = 2; i < width; i++)
+    {
+        printf("─");
+    }
+    printf("┘");
 }

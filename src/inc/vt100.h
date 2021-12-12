@@ -88,7 +88,7 @@ class tc_vt100
         void clear_terminal();
 
         void set_window_size(uint width, uint height);
-        void print_window_border();
+        void create_window_at_pos(uint width, uint height, const char* title, uint x, uint y);
 
 };
 
