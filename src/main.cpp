@@ -27,7 +27,8 @@ typedef enum te_type
     HEX16,
     HEX32,
     ARRAY,
-    FLOAT
+    FLOAT,
+    EOT
 }te_type;
 
 typedef struct ts_table_entry
@@ -59,18 +60,37 @@ ts_table_entry ts_te_id[] =
     {"model rev",   &vl6108.reg.id_model_rev_maj,   UINT8},
     {"module rev",  &vl6108.reg.id_module_rev_maj,  UINT8},
     {"date",        &vl6108.reg.id_date_hi,         UINT8},
-    {"time",        &vl6108.reg.id_time,            UINT8}
+    {"time",        &vl6108.reg.id_time,            UINT8},
+    {NULL,          NULL,                           EOT}
 };
 
 tc_table tb_id(&terminal, ts_te_id, 1, 30);
 
 tc_table::tc_table(tc_vt100* _terminal, ts_table_entry* _table, uint _collumn_1, uint _collumn_2)
 {
+    uint table_len = 0;
+
     term = _terminal;
     table = _table;
     table_size = 4;
     collumn_1 = _collumn_1;
     collumn_2 = _collumn_2;
+
+    if(table != NULL)
+    {
+        while(table_len < 20)
+        {
+            if(table[table_len].type == EOT)
+            {
+                break;
+            }
+            else
+            {
+                table_len++;
+            }
+        }
+    }
+    table_size = table_len;
 }
 
 void tc_table::print_table_at_pos(uint x, uint y)
@@ -138,7 +158,9 @@ int main()
     cursor_collumn = 2;
 
     terminal.create_window_at_pos(39, 8, "ID Info", cursor_collumn, cursor_row);
-    tb_id.print_table_at_pos((cursor_collumn+1), (cursor_row+1));
+    cursor_collumn = 3;
+    cursor_row = 7;
+    tb_id.print_table_at_pos(cursor_collumn, cursor_row);
     //cursor_collumn = 3;
     //cursor_row = cursor_row + 3;
     //terminal.set_cursor(cursor_collumn, cursor_row++);
