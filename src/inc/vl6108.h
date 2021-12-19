@@ -95,6 +95,46 @@ class tc_vl6108
             /*0x212*/uint8_t  i2c_slave_device_address;
             /*0x2A3*/uint8_t  interleaved_mode_enable;
         }reg;
+
+        struct id
+        {
+            uint model_id;
+            float model_rev;
+            float module_rev;
+            float date;
+            uint time;
+        }id;
+        struct sys
+        {
+            struct gpio0
+            {
+                bool shutdown;
+                bool polarity;
+                bool select;
+            };
+            struct gpio1
+            {
+                bool polarity;
+                bool select;
+            };
+            struct history
+            {
+                bool clear;
+                bool mode;
+                bool enable;
+            };
+            struct interrupt
+            {
+                uint als;
+                uint range;
+                bool clear_range;
+                bool clear_als;
+                bool clear_error;
+            };
+            bool fresh_reset;
+            bool hold;
+        };
+
         //public class methods
         tc_vl6108();
         void set_address(uint _address);

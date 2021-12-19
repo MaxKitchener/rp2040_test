@@ -10,6 +10,8 @@
 #include "pico/stdlib.h"
 #include "pico/bootrom.h"
 
+#include "tui.h"
+
 #include "gpio.h"
 #include "i2c.h"
 #include "vt100.h"
@@ -17,103 +19,44 @@
 
 #define BOOT_DELAY 1500
 
-typedef enum te_type
-{
-    STRING,
-    UINT8,
-    UINT16,
-    UINT32,
-    HEX8,
-    HEX16,
-    HEX32,
-    ARRAY,
-    FLOAT,
-    EOT
-}te_type;
 
-typedef struct ts_table_entry
-{
-    const char* string;
-    void* value;
-    te_type type;
-}ts_table_entry;
 
-class tc_table
-{
-    private:
-        tc_vt100* term;
-        ts_table_entry* table;
-        uint table_size;
-        uint collumn_1;
-        uint collumn_2;
-    public:
-        tc_table(tc_vt100* _terminal, ts_table_entry* _table, uint _collumn_1, uint _collumn_2);
-        void print_table_at_pos(uint x, uint y);
-};
+
 
 tc_vt100 terminal;
 tc_vl6108 vl6108;
 
 ts_table_entry ts_te_id[] =
 {
-    {"model id",    &vl6108.reg.id_model_id,        HEX8},
-    {"model rev",   &vl6108.reg.id_model_rev_maj,   UINT8},
-    {"module rev",  &vl6108.reg.id_module_rev_maj,  UINT8},
-    {"date",        &vl6108.reg.id_date_hi,         UINT8},
-    {"time",        &vl6108.reg.id_time,            UINT8},
-    {NULL,          NULL,                           EOT}
+    {"model id",        &vl6108.id.model_id,            HEX8},
+    {"model id",        &vl6108.reg.id_model_id,        HEX8},
+    {"model rev",       &vl6108.id.model_rev,           FLOAT},
+    {"model rev maj",   &vl6108.reg.id_model_rev_maj,   HEX8},
+    {"model rev min",   &vl6108.reg.id_model_rev_min,   HEX8},
+    {"module rev",      &vl6108.id.module_rev,          FLOAT},
+    {"module rev maj",  &vl6108.reg.id_module_rev_maj,  HEX8},
+    {"module rev min",  &vl6108.reg.id_module_rev_min,  HEX8},
+    {"date",            &vl6108.id.date,                FLOAT},
+    {"time",            &vl6108.id.time,                UINT16},
+    {NULL,              NULL,                           STRING}
 };
 
-tc_table tb_id(&terminal, ts_te_id, 1, 30);
-
-tc_table::tc_table(tc_vt100* _terminal, ts_table_entry* _table, uint _collumn_1, uint _collumn_2)
+ts_table_entry ts_te_sys[] =
 {
-    uint table_len = 0;
+    {"mode gpio0",              &vl6108.reg.sys_mode_gpio0,             UINT8},
+    {"mode gpio1",              &vl6108.reg.sys_mode_gpio1,             UINT8},
+    {"history ctrl",            &vl6108.reg.sys_history_ctrl,           UINT8},
+    {"interrupt conf gpio0",    &vl6108.reg.sys_interrupt_config_gpio0, UINT8},
+    {"interupt clear",          &vl6108.reg.sys_interrupt_clear,        UINT8},
+    {"fresh out of reset",      &vl6108.reg.sys_fresh_out_of_reset,     UINT8},
+    {"grouped paramater hold",  &vl6108.reg.sys_grouped_parameter_hold, UINT8},
+    {NULL,                      NULL,                                   STRING}
+};
 
-    term = _terminal;
-    table = _table;
-    table_size = 4;
-    collumn_1 = _collumn_1;
-    collumn_2 = _collumn_2;
+tc_table tb_id(&terminal, "ID Info",   ts_te_id, 39, 10);
+tc_table tb_sys(&terminal, "Sys Info", ts_te_sys, 39, 10);
 
-    if(table != NULL)
-    {
-        while(table_len < 20)
-        {
-            if(table[table_len].type == EOT)
-            {
-                break;
-            }
-            else
-            {
-                table_len++;
-            }
-        }
-    }
-    table_size = table_len;
-}
 
-void tc_table::print_table_at_pos(uint x, uint y)
-{
-    term->set_cursor(x, y);
-
-    for (uint row = 0; row < table_size; row++)
-    {
-        term->set_cursor(x+collumn_1, y+row);
-        printf("%-*.*s", collumn_2-collumn_1, collumn_2-collumn_1, table[row].string);
-        term->set_cursor(x+collumn_2, y+row);
-        switch(table[row].type)
-        {
-            case UINT8:
-                printf("%i", (uint8_t)(uint32_t)table[row].value);
-                break;
-            case HEX8:
-                printf("0x%02X", (uint8_t)(uint32_t)&table[row].value);
-                break;
-        }
-    }
-
-}
 
 
 /**
@@ -157,9 +100,7 @@ int main()
     cursor_row = 4;
     cursor_collumn = 2;
 
-    terminal.create_window_at_pos(39, 8, "ID Info", cursor_collumn, cursor_row);
-    cursor_collumn = 3;
-    cursor_row = 7;
+    //terminal.create_window_at_pos(39, 8, "ID Info", cursor_collumn, cursor_row);
     tb_id.print_table_at_pos(cursor_collumn, cursor_row);
     //cursor_collumn = 3;
     //cursor_row = cursor_row + 3;
@@ -174,26 +115,18 @@ int main()
     //terminal.set_cursor(cursor_collumn, cursor_row++);
     //printf("%-20.20s : %i", "time", vl6108.reg.id_time);
 
-    cursor_row = 14;
+    //cursor_row = 14;
+    //cursor_collumn = 2;
+    //terminal.create_window_at_pos(39, 10, "Sys Info", cursor_collumn, cursor_row);
+    cursor_row = 25;
     cursor_collumn = 2;
-    terminal.create_window_at_pos(39, 10, "Sys Info", cursor_collumn, cursor_row);
+    tb_sys.print_table_at_pos(cursor_collumn, cursor_row);
 
-    cursor_row = cursor_row + 3;
-    cursor_collumn = 3;
-    terminal.set_cursor(cursor_collumn, cursor_row++);
-    printf("%-20.20s : %i", "mode gpio0", vl6108.reg.sys_mode_gpio0);
-    terminal.set_cursor(cursor_collumn, cursor_row++);
-    printf("%-20.20s : %i", "mode gpio1", vl6108.reg.sys_mode_gpio1);
-    terminal.set_cursor(cursor_collumn, cursor_row++);
-    printf("%-20.20s : %i", "history ctrl", vl6108.reg.sys_history_ctrl);
-    terminal.set_cursor(cursor_collumn, cursor_row++);;
-    printf("%-20.20s : %i", "interrupt conf gpio0", vl6108.reg.sys_interrupt_config_gpio0);
-    terminal.set_cursor(cursor_collumn, cursor_row++);;
-    printf("%-20.20s : %i", "interupt clear", vl6108.reg.sys_interrupt_clear);
-    terminal.set_cursor(cursor_collumn, cursor_row++);;
-    printf("%-20.20s : %i", "fresh out of reset", vl6108.reg.sys_fresh_out_of_reset);
-    terminal.set_cursor(cursor_collumn, cursor_row++);;
-    printf("%-20.20s : %i", "grouped paramater hold", vl6108.reg.sys_grouped_parameter_hold);
+
+
+
+
+
 
     cursor_row = 4;
     cursor_collumn = 41;

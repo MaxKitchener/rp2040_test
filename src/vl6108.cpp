@@ -34,6 +34,10 @@ void tc_vl6108::set_i2c(tc_i2c* _i2c)
 void tc_vl6108::get_id_info()
 {
     i2c->read(address, 0x00, &reg.id_model_id, 9);
+
+    id.model_id = reg.id_model_id;
+    id.model_rev = ((float)(reg.id_model_rev_maj * 100) + reg.id_model_rev_min)/100;
+    id.module_rev = ((float)(reg.id_module_rev_maj * 100) + reg.id_module_rev_min)/100;
 }
 
 void tc_vl6108::get_sys_info()
